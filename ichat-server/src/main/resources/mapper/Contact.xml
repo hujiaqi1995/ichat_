@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdu.ichat.dao.ContactDao">
+
+    <resultMap id="BaseResultMap" type="com.xdu.ichat.entity.User">
+        <id column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="nick" jdbcType="VARCHAR" property="nick"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+    </resultMap>
+
+    <resultMap id="ContactPOMap" type="com.xdu.ichat.entity.po.ContactPO">
+        <id column="owner_uid" jdbcType="BIGINT" property="ownerUid"/>
+        <result column="other_uid" jdbcType="BIGINT" property="otherUid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT
+            u.uid, u.nick, u.username, u.avatar
+        FROM
+            ichat_user u
+        LEFT JOIN
+            ichat_contact c on c.other_uid = u.uid
+        WHERE
+            c.owner_uid = #{ownerUid,jdbcType=BIGINT}
+    </select>
+
+    <select id="findByOwnerUidAndOtherUid" resultMap="ContactPOMap">
+        SELECT
+            owner_uid, other_uid, create_time
+        FROM
+            ichat_contact
+        WHERE
+            owner_uid=#{ownerUid,jdbcType=BIGINT} AND other_uid=#{otherUid,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO
+            ichat_contact(owner_uid, other_uid)
+        VALUES
+            (#{ownerUid,jdbcType=BIGINT}, #{otherUid,jdbcType=BIGINT})
+    </insert>
+
+</mapper>

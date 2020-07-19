@@ -1,0 +1,1 @@
+nohup java -Xms250m -Xmx250m -jar target/ichat-0.0.1-SNAPSHOT.jar &

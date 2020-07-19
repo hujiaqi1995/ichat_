@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdu.ichat.dao.MsgDao">
+
+    <resultMap id="BaseResultMap" type="com.xdu.ichat.entity.po.MsgPO">
+        <id column="mid" jdbcType="BIGINT" property="mid"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="type" jdbcType="TIMESTAMP" property="type"/>
+    </resultMap>
+
+    <resultMap id="MsgContentMap" type="com.xdu.ichat.entity.po.MsgContentPO">
+        <id column="mid" jdbcType="BIGINT" property="mid"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+    </resultMap>
+
+    <resultMap id="MsgContactResult" type="com.xdu.ichat.entity.po.MsgContactPO">
+        <id column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="nick" jdbcType="VARCHAR" property="nick"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+    </resultMap>
+
+    <resultMap id="MsgRelationResult" type="com.xdu.ichat.entity.po.MsgRelationPO">
+        <id column="owner_uid" jdbcType="BIGINT" property="ownerUid"/>
+        <result column="other_uid" jdbcType="BIGINT" property="otherUid"/>
+        <result column="mid" jdbcType="BIGINT" property="mid" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="type" jdbcType="TIMESTAMP" property="type"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+            c.mid as mid, c.content as content, r.create_time as create_time, r.type
+        from
+            ichat_msg_content c
+        left join
+            ichat_msg_relation r
+        on
+            r.mid = c.mid
+        WHERE
+            r.owner_uid = #{ownerUid,jdbcType=BIGINT}
+        and
+            r.other_uid = #{otherUid, jdbcType=BIGINT}
+    </select>
+
+    <select id="findMsgContacts" resultMap="MsgContactResult">
+        SELECT
+            u.uid, u.nick, u.username, u.avatar, c1.create_time, c2.content
+        FROM
+            ichat_user u
+        LEFT JOIN
+            ichat_msg_contact c1 ON u.uid = c1.other_uid
+        LEFT JOIN
+            ichat_msg_content c2 ON c1.mid = c2.mid
+        WHERE
+            c1.owner_uid=#{ownerUid,jdbcType=BIGINT};
+    </select>
+
+    <select id="findMsgContact" resultMap="MsgRelationResult">
+        SELECT
+            owner_uid, other_uid, mid, type, create_time
+        FROM
+            ichat_msg_contact
+        WHERE
+            owner_uid=#{ownerUid,jdbcType=BIGINT} AND other_uid=#{otherUid,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertMsgContact">
+        INSERT INTO
+            ichat_msg_contact(owner_uid, other_uid, mid, type)
+        VALUES
+            (#{ownerUid,jdbcType=BIGINT}, #{otherUid,jdbcType=BIGINT}, #{mid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateMsgContact">
+        UPDATE
+            ichat_msg_contact
+        SET
+            mid = #{mid,jdbcType=BIGINT},
+            type = #{type,jdbcType=INTEGER},
+            create_time = now()
+        WHERE
+            owner_uid=#{ownerUid,jdbcType=BIGINT} AND other_uid=#{otherUid,jdbcType=BIGINT}
+    </update>
+
+    <insert id="insertMsgContent" useGeneratedKeys="true" keyProperty="mid">
+        insert into
+            ichat_msg_content(content)
+        values
+            (#{content,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertMsgRelation" useGeneratedKeys="true" keyProperty="mid">
+        insert into
+            ichat_msg_relation(owner_uid, other_uid, mid, type)
+        values
+            (#{ownerUid,jdbcType=BIGINT}, #{otherUid,jdbcType=BIGINT}, #{mid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER})
+    </insert>
+</mapper>

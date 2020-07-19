@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="/static/css/login.css">
+    <script type="text/javascript" src="/static/js/ws_chat.js"></script>
+    
+</head>
+<body>
+<div class="main">
+    <div class="title">
+        <span>用户登录</span>
+    </div>
+
+    <form class="login-form" method="post" id="login-form" novalidate>
+        <div class="input-content">
+            <div>
+                <input type="text" autocomplete="off" placeholder="用户名" name="username" required/>
+            </div>
+            <div style="margin-top: 16px">
+                <input type="password" autocomplete="off" placeholder="登录密码" name="password" required maxlength="32"/>
+            </div>
+        </div>
+        <div class="captcha">
+                <input class = "captcha_input" type="text" autocomplete="off" placeholder="验证码" name="captcha" required/>
+                <img class="captcha_image" id="captcha_image" src="" onclick='getCaptcha()'/>
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <button type="button" id="loginbutton" class="enter-btn">登录</button>
+        </div>
+        <p id="error_reason" style="color: red"></p>
+    </form>
+</div>
+<div class="readme">
+    <h3>测试账号</h3>
+    <table style="width:100%">
+    <tr>
+        <td>昵称</td>
+        <td>用户名</td>
+        <td>密码</td>
+    </tr>
+    <tr>
+        <td>刘备</td>
+        <td>liubei</td>
+        <td>liubei</td>
+    </tr>
+    <tr>
+        <td>关羽</td>
+        <td>guanyu</td>
+        <td>guanyu</td>
+    </tr>
+    <tr>
+        <td>张飞</td>
+        <td>zhangfei</td>
+        <td>zhangfei</td>
+    </tr>
+</table>
+</div>
+<script>
+    getCaptcha();
+</script>
+</body>
+</html>

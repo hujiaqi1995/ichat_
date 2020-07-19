@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <title>iChat</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/static/css/chat.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/ws_chat.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<table class="table">
+    <thead id="info_top">
+    <th><h2>iChat 聊天系统</h2></th>
+    <th>
+        <div align="right"><label id="ws_status"></label><a href="https://jqhu.top/ichat/index.html">&nbsp &nbsp登出</a></div>
+    </th>
+    </thead>
+</table>
+<div class="row">
+    <div class="col-xs-6 w-50">
+        <h4 align="center" class="w-100 sub-header">最近联系人</h4>
+        <span class="p-3">总未读消息条数:<i id="totalUnread" class="unread"></i></span>
+        <div class="table-responsive text-center">
+            <table class="table table-hover table-bordered table-striped w-100">
+                <thead class="w-100 bg-info">
+                <th>头像</th>
+                <th>昵称</th>
+                <th>最近一条消息</th>
+                <th>未读数</th>
+                <th>操作</th>
+                </thead>
+                <tbody id="contactsMsgBody" class="w-100">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-xs-6 w-50">
+        <h4 align="center" class="w-50 sub-header pl-5">所有联系人</h4>
+        <div class="table-responsive text-center pl-5">
+            <table class="table table-hover table-bordered w-50">
+                <thead class="w-50 bg-success">
+                <th>头像</th>
+                <th>昵称</th>
+                <th>操作</th>
+                </thead>
+                <tbody class="w-75" id="contactsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatPaneLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="chatPaneLabel">和TA聊点啥</h4>
+            </div>
+            <div class="modal-body p-1">
+                <ul class="chat-thread" style="overflow-scrolling: auto">
+                </ul>
+                <div class="form-group">
+                    <input id="recipient_id" hidden="true"/>
+                    <input id="recipient_name" hidden="true"/>
+                    <textarea class="form-control" id="message-text"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="sendBtn" class="btn btn-primary">发送</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var websocket;
+    $(document).ready(function () {
+        init();
+    });
+
+    $('#chatModal').on('shown.bs.modal', function (event) {
+        queryMsg(event);
+        $('.chat-thread').animate({scrollTop: $('.chat-thread').prop("scrollHeight")});
+    })
+
+    $("#message-text").keydown(function (event) {
+        if (event.keyCode == 13) {
+            sendMsg(event);
+        }
+    });
+
+    $("#sendBtn").click(function (event) {
+        sendMsg(event);
+    });
+</script>
+</body>
+
+</html>
